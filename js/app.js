@@ -22,55 +22,162 @@
     }).addTo(map);
 
     //Add data to the map
-    omnivore.csv('data/gr-collisions1416.csv').addTo(map);
     //Error test for loading data
     omnivore.csv('data/gr-collisions1416.csv')
         .on('ready', function(e) {
-            console.log(e.target)
+          drawMap(e.target.toGeoJSON());
         })
         .on('error', function(e) {
             console.log(e.error[0].message);
     });
 
-    // create Leaflet control for the legend
-    var legendControl = L.control({
-        position: 'topright'
-    });
+    function drawMap(data) {
 
-    // when the control is added to the map
-    legendControl.onAdd = function (map) {
+        var options = {
+            pointToLayer: function (feature, ll) {
+                return L.circleMarker(ll, {
+                    opacity: 1,
+                    weight: 2,
+                    fillOpacity: 0,
+                })
+            }
+        }
 
-        // select the legend using id attribute of legend
-        var legend = L.DomUtil.get("legend");
+        var collisionsLayer = L.geoJson(data, options).addTo(map),
 
-        // disable scroll and click functionality
-        L.DomEvent.disableScrollPropagation(legend);
-        L.DomEvent.disableClickPropagation(legend);
+        // // fit the bounds of the map to one of the layers
+        // map.fitBounds(collisionsLayer.getBounds());
+        //
+        // // adjust zoom level of map
+        // map.setZoom(map.getZoom() - .4);
 
-        // return the selection
-        return legend;
+        // collisionsLayer.setStyle({
+        //     color: 'red',
+        // });
 
-    }
+        // // enable slider UI and label
+        // sequenceUI(collisionsLayer, 2014);
 
-    legendControl.addTo(map);
 
-    // do the same thing for the UI slider
-    var sliderControl = L.control({
-        position: 'bottomleft'
-    });
+    } // end drawMap()
 
-    sliderControl.onAdd = function(map) {
+    // function sequenceUI(collisionsLayer, currentYear) {
+    //
+    //     // create Leaflet control for the slider
+    //     var sliderControl = L.control({
+    //         position: 'bottomleft'
+    //     });
+    //
+    //     sliderControl.onAdd = function (map) {
+    //         var controls = L.DomUtil.get("slider");
+    //
+    //         L.DomEvent.disableScrollPropagation(controls);
+    //         L.DomEvent.disableClickPropagation(controls);
+    //
+    //         return controls;
+    //     }
+    //
+    //     sliderControl.addTo(map);
+    //
+    //     // create Leaflet control for the legend
+    //     var sliderLabel = L.control({
+    //         position: 'bottomleft'
+    //     });
+    //
+    //
+    //
+    //     // when the control is added to the map
+    //     sliderLabel.onAdd = function (map) {
+    //
+    //         // select the legend using id attribute of legend
+    //         var label = L.DomUtil.get("label");
+    //
+    //         // disable scroll and click functionality
+    //         L.DomEvent.disableScrollPropagation(label);
+    //         L.DomEvent.disableClickPropagation(label);
+    //
+    //         // return the selection
+    //         return label;
+    //
+    //     }
+    //
+    //     sliderLabel.addTo(map);
+    //
+    //     //select the slider's input and listen for change
+    //     $('#slider input[type=range]')
+    //         .on('input', function () {
+    //             // current value of slider is current year
+    //             var currentYear = this.value;
+    //
+    //             // populate HTML elements with relevant info
+    //             $('#label span').html(currentYear);
+    //         });
+    //
+    // }
 
-        var controls = L.DomUtil.get("slider");
-
-        L.DomEvent.disableScrollPropagation(controls);
-        L.DomEvent.disableClickPropagation(controls);
-
-        return controls;
-
-    }
-
-    sliderControl.addTo(map);
-
+    // function retreiveInfo(enrollLayer, currentYear) {
+    //
+    //     // select the element and reference with variable
+    //     // and hide it from view initially
+    //     var info = $('#info').hide();
+    //
+    //     // since boysLayer is on top, use to detect mouseover events
+    //     collisionsLayer.on('mouseover', function (e) {
+    //
+    //         // remove the none class to display and show
+    //         info.show();
+    //
+    //         // access properties of target layer
+    //         var props = e.layer.feature.properties;
+    //
+    //         // populate HTML elements with relevant info
+    //         $('#info span').html(props.IHE_NAME);
+    //         $(".year span").html(currentYear);
+    //         $(".hs span:last-child").html(Number(props['MI_HS' + currentYear]).toLocaleString());
+    //         $(".enroll span:last-child").html(Number(props['Enroll' + currentYear]).toLocaleString());
+    //
+    //         // raise opacity level as visual affordance
+    //         e.layer.setStyle({
+    //             fillOpacity: .6
+    //         });
+    //
+    //     });
+    //
+    //     // hide the info panel when mousing off layergroup and remove affordance opacity
+    //     collisionsLayer.on('mouseout', function(e) {
+    //
+    //         // hide the info panel
+    //         info.hide();
+    //
+    //         // reset the layer style
+    //         e.layer.setStyle({
+    //             fillOpacity: 0
+    //         });
+    //
+    //     });
+    //
+    //     // when the mouse moves on the document
+    //     $(document).mousemove(function(e) {
+    //         // first offset from the mouse position of the info window
+    //         info.css({
+    //             "left": e.pageX + 6,
+    //             "top": e.pageY - info.height() - 25
+    //         });
+    //
+    //         // if it crashes into the top, flip it lower right
+    //         if (info.offset().top < 4) {
+    //             info.css({
+    //                 "top": e.pageY + 15
+    //             });
+    //         }
+    //         // if it crashes into the right, flip it to the left
+    //         if (info.offset().left + info.width() >= $(document).width() - 40) {
+    //             info.css({
+    //                 "left": e.pageX - info.width() - 80
+    //             });
+    //         }
+    //     });
+    //
+    // }
 
 })();
