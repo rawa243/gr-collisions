@@ -1,9 +1,16 @@
 /* custom CSS rules */
 
+#map {
+    background: ##fbb4ae;
+}
+
+h1 {
+    color: red;
+}
+
 /* display none for layout but be careful of license restrictions */
 .mapbox-logo, .leaflet-control-attribution {
   display: none;
-
 }
 
 .legend-large, .legend-small {
