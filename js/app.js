@@ -131,10 +131,12 @@
     //         var props = e.layer.feature.properties;
     //
     //         // populate HTML elements with relevant info
-    //         $('#info span').html(props.IHE_NAME);
+    //         $('#info span').html(props.CRASHTYPE);
     //         $(".year span").html(currentYear);
-    //         $(".hs span:last-child").html(Number(props['MI_HS' + currentYear]).toLocaleString());
-    //         $(".enroll span:last-child").html(Number(props['Enroll' + currentYear]).toLocaleString());
+    //         $(".cs span:last-child").html(CRASHSEVER);
+    //         $(".hr span:last-child").html(HITANDRUN);
+    //         $(".in span:last-child").html(NUMOFINJ);
+    //         $(".ki span:last-child").html(NUMOFKILL);    
     //
     //         // raise opacity level as visual affordance
     //         e.layer.setStyle({
