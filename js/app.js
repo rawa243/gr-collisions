@@ -1,13 +1,13 @@
 (function(){
 
-    // initialize map, centered on Kenya
+    // initialize map, centered on Grand Rapids
     var map = L.map('map', {
         zoomSnap: .1,
-        center: [44.60, -85],
-        zoom: 9,
+        center: [42.96, -85.66],
+        zoom: 11.9,
         minZoom: 6,
         maxZoom: 12,
-        maxBounds: L.latLngBounds([42, -85], [43, -84])
+        maxBounds: L.latLngBounds([42.5, -86.5], [43.5, -85])
     });
 
     // mapbox API access Token
