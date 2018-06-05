@@ -4,10 +4,10 @@
     var map = L.map('map', {
         zoomSnap: .1,
         center: [44.60, -85],
-        zoom: 7,
+        zoom: 9,
         minZoom: 6,
-        maxZoom: 9,
-        maxBounds: L.latLngBounds([41.58, -90.84], [48.51, -80])
+        maxZoom: 12,
+        maxBounds: L.latLngBounds([42, -85], [43, -84])
     });
 
     // mapbox API access Token
@@ -22,9 +22,9 @@
     }).addTo(map);
 
     //Add data to the map
-    omnivore.csv('data/MI_CollegeEnrollment.csv').addTo(map);
+    omnivore.csv('data/gr-collisions1416.csv').addTo(map);
     //Error test for loading data
-    omnivore.csv('data/MI_CollegeEnrollment.csv')
+    omnivore.csv('data/gr-collisions1416.csv')
         .on('ready', function(e) {
             console.log(e.target)
         })
