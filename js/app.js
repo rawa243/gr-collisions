@@ -5,8 +5,8 @@
         zoomSnap: .1,
         center: [42.96, -85.66],
         zoom: 11.9,
-        minZoom: 6,
-        maxZoom: 12,
+        minZoom: 10,
+        maxZoom: 18,
         maxBounds: L.latLngBounds([42.5, -86.5], [43.5, -85])
     });
 
@@ -36,27 +36,25 @@
         var options = {
             pointToLayer: function (feature, ll) {
                 return L.circleMarker(ll, {
+                    radius: 2,
                     opacity: 1,
-                    weight: 2,
-                    fillOpacity: 0,
+                    weight: 1,
+                    fillOpacity: 1
                 })
             }
         }
 
-        var collisionsLayer = L.geoJson(data, options).addTo(map),
+        var collisionsLayer = L.geoJson(data, options).addTo(map)
 
-        // // fit the bounds of the map to one of the layers
-        // map.fitBounds(collisionsLayer.getBounds());
-        //
-        // // adjust zoom level of map
-        // map.setZoom(map.getZoom() - .4);
+        // fit the bounds of the map to one of the layers
+        map.fitBounds(collisionsLayer.getBounds());
 
-        // collisionsLayer.setStyle({
-        //     color: 'red',
-        // });
+        collisionsLayer.setStyle({
+            color: 'red'
+        });
 
-        // // enable slider UI and label
-        // sequenceUI(collisionsLayer, 2014);
+        // enable slider UI and label
+        sequenceUI(collisionsLayer, 2014);
 
 
     } // end drawMap()
@@ -136,7 +134,7 @@
     //         $(".cs span:last-child").html(CRASHSEVER);
     //         $(".hr span:last-child").html(HITANDRUN);
     //         $(".in span:last-child").html(NUMOFINJ);
-    //         $(".ki span:last-child").html(NUMOFKILL);    
+    //         $(".ki span:last-child").html(NUMOFKILL);
     //
     //         // raise opacity level as visual affordance
     //         e.layer.setStyle({
