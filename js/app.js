@@ -39,7 +39,6 @@
                     radius: 2,
                     opacity: 1,
                     weight: 1,
-                    fillOpacity: 1
                 })
             }
         }
@@ -54,7 +53,10 @@
         });
 
         // enable slider UI and label
-        sequenceUI(collisionsLayer, 2014);
+        //sequenceUI(collisionsLayer, 2014);
+
+        // update the hover window with current grade's
+        retreiveInfo(collisionsLayer);
 
 
     } // end drawMap()
@@ -113,71 +115,71 @@
     //
     // }
 
-    // function retreiveInfo(enrollLayer, currentYear) {
-    //
-    //     // select the element and reference with variable
-    //     // and hide it from view initially
-    //     var info = $('#info').hide();
-    //
-    //     // since boysLayer is on top, use to detect mouseover events
-    //     collisionsLayer.on('mouseover', function (e) {
-    //
-    //         // remove the none class to display and show
-    //         info.show();
-    //
-    //         // access properties of target layer
-    //         var props = e.layer.feature.properties;
-    //
-    //         // populate HTML elements with relevant info
-    //         $('#info span').html(props.CRASHTYPE);
-    //         $(".year span").html(currentYear);
-    //         $(".cs span:last-child").html(CRASHSEVER);
-    //         $(".hr span:last-child").html(HITANDRUN);
-    //         $(".in span:last-child").html(NUMOFINJ);
-    //         $(".ki span:last-child").html(NUMOFKILL);
-    //
-    //         // raise opacity level as visual affordance
-    //         e.layer.setStyle({
-    //             fillOpacity: .6
-    //         });
-    //
-    //     });
-    //
-    //     // hide the info panel when mousing off layergroup and remove affordance opacity
-    //     collisionsLayer.on('mouseout', function(e) {
-    //
-    //         // hide the info panel
-    //         info.hide();
-    //
-    //         // reset the layer style
-    //         e.layer.setStyle({
-    //             fillOpacity: 0
-    //         });
-    //
-    //     });
-    //
-    //     // when the mouse moves on the document
-    //     $(document).mousemove(function(e) {
-    //         // first offset from the mouse position of the info window
-    //         info.css({
-    //             "left": e.pageX + 6,
-    //             "top": e.pageY - info.height() - 25
-    //         });
-    //
-    //         // if it crashes into the top, flip it lower right
-    //         if (info.offset().top < 4) {
-    //             info.css({
-    //                 "top": e.pageY + 15
-    //             });
-    //         }
-    //         // if it crashes into the right, flip it to the left
-    //         if (info.offset().left + info.width() >= $(document).width() - 40) {
-    //             info.css({
-    //                 "left": e.pageX - info.width() - 80
-    //             });
-    //         }
-    //     });
-    //
-    // }
+    function retreiveInfo(collisionsLayer) {
+
+        // select the element and reference with variable
+        // and hide it from view initially
+        var info = $('#info').hide();
+
+        // since collisionsLayer is on top, use to detect mouseover events
+        collisionsLayer.on('mouseover', function (e) {
+
+            // remove the none class to display and show
+            info.show();
+
+            // access properties of target layer
+            var props = e.layer.feature.properties;
+
+            // populate HTML elements with relevant info
+            $('#info span').html(props.CRASHTYPE);
+            $(".year span").html(props.YEAR);
+            $(".cs span:last-child").html(props.CRASHSEVER);
+            $(".hr span:last-child").html(props.HITANDRUN);
+            $(".in span:last-child").html(props.NUMOFINJ);
+            $(".ki span:last-child").html(props.NUMOFKILL);
+
+            // raise opacity level as visual affordance
+            e.layer.setStyle({
+                fillOpacity: .6
+            });
+
+        });
+
+        // hide the info panel when mousing off layergroup and remove affordance opacity
+        collisionsLayer.on('mouseout', function(e) {
+
+            // hide the info panel
+            info.hide();
+
+            // reset the layer style
+            e.layer.setStyle({
+                fillOpacity: 0
+            });
+
+        });
+
+        // when the mouse moves on the document
+        $(document).mousemove(function(e) {
+            // first offset from the mouse position of the info window
+            info.css({
+                "left": e.pageX + 6,
+                "top": e.pageY - info.height() - 25
+            });
+
+            // if it crashes into the top, flip it lower right
+            if (info.offset().top < 4) {
+                info.css({
+                    "top": e.pageY + 15
+                });
+            }
+            // if it crashes into the right, flip it to the left
+            if (info.offset().left + info.width() >= $(document).width() - 40) {
+                info.css({
+                    "left": e.pageX - info.width() - 80
+                });
+            }
+        });
+
+    }
 
 })();
