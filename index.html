@@ -179,32 +179,37 @@ console.log(limitsData);
          .attr("cy", function (d) {
            return d.position[1];
          })
-         .attr("r", "8px")
+         .attr("r", "2px")
          .attr("class", "facility")
          .style("fill", function (d) {  // give each facility a fill style
            return color(d.YEAR)  // derive the hex color from the value
          })
-        // .on("mouseover", function(d) {  // when mousing over an element
-        //   d3.select(this).classed("hover", true).raise();  // select it, add a class name, and bring to front
-        //   tooltip.style("opacity", 1).html(d.Facility_Name + "</br>" + formatComma(Math.round(d.Total)) + " tons")  // make tooltip visible and update info
-        // })
-        // .on("mouseout", function() { // when mousing out of an element
-        //   d3.select(this).classed("hover", false) // remove the class
-        //   tooltip.style("opacity", 0)  // hide the element
-        // })
+        .on("mouseover", function(d) {  // when mousing over an element
+          d3.select(this).classed("hover", true).raise();  // select it, add a class name, and bring to front
+          tooltip.style("opacity", 1).html("<b>" + "Crash Type: " + "</b>" + d.CRASHTYPE + "</br>"
+                                          + "<b>" + "Year: " + "</b>" + + d.YEAR + "</br>"
+                                          + "<b>" + "Severity: " + "</b>" + d.CRASHSEVER + "</br>"
+                                          + "<b>" + "Hit and Run: " + "</b>" + d.HITANDRUN + "</br>"
+                                          + "<b>" + "# injured: " + "</b>" + d.NUMOFINJ + "</br>"
+                                          + "<b>" + "# killed: " + "</b>" + d.NUMOFKILL)  // make tooltip visible and update info
+        })
+        .on("mouseout", function() { // when mousing out of an element
+          d3.select(this).classed("hover", false) // remove the class
+          tooltip.style("opacity", 0)  // hide the element
+        })
 
-    // // Create  div for the tooltip and hide with opacity
-    // var tooltip = d3.select("body").append("div")
-    //     .attr("class", "tooltip")
-    //
-    // // select the map element
-    // d3.select("#map")
-    //   .on("mousemove", function (event) { // when mouse moves over it
-    //     // update the position of the tooltip
-    //     tooltip.style("left", (d3.event.pageX + 10) + "px")
-    //       .style("top", (d3.event.pageY - 30) + "px");
-    //   })
-    //
+    // Create  div for the tooltip and hide with opacity
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+
+    // select the map element
+    d3.select("#map")
+      .on("mousemove", function (event) { // when mouse moves over it
+        // update the position of the tooltip
+        tooltip.style("left", (d3.event.pageX + 10) + "px")
+          .style("top", (d3.event.pageY - 30) + "px");
+      })
+
     // drawLegend(svg, width, height);
     //
     // function drawLegend(svg, width, height) {
