@@ -2,298 +2,104 @@
 <html>
 
 <head>
-  <title>MAP672 Lesson 07 Starter Template</title>
-  <meta name="viewport" content="initial-scale=1.0">
-  <meta charset="utf-8">
+    <meta charset=utf-8 />
+    <title>GR Collisions</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!-- loading Assembly CSS here -->
+    <link href='https://api.mapbox.com/mapbox-assembly/v0.21.2/assembly.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+    <link href='css/styles.css' rel='stylesheet' />
 
-  <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-  <style>
-    body {
-      padding: 0;
-      margin: 0;
-      background: whitesmoke;
-      font-family: Montserrat, serif;
-    }
-    header, footer {
-      background: #245574;
-      color: white;
-      padding: 18px 0;
-      box-shadow: 0px 1px 3px #245574;
-    }
-    .container {
-      width: 960px;
-      margin: 18px auto;
-    }
-    h1 {
-      width: 960px;
-      margin: 0 auto;
-      font-size: 2em;
-    }
-    a {
-      color: white;
-    }
-    ul li {
-      margin: 0 0 8px 0;
-    }
-    #map {
-      width: 100%;
-      height: 600px;
-    }
+    <style>
+        <link href='css/styles.css' rel='stylesheet' />
+    </style>
 
-    .facility {
-      fill: #cf5635;
-      stroke: white;
-      stroke-width: .3;
-      opacity: .8;
-    }
-    .legend circle {
-      fill: none;
-      stroke: #ccc;
-    }
-
-    .legend text {
-      fill: #777;
-      font: 10px sans-serif;
-      text-anchor: middle;
-    }
-    .filter {
-      position: absolute;
-      right: 48px;
-      width: 260px;
-      font-size: 1.3em;
-    }
-    .hover {
-      stroke: #fe955f;
-      stroke-width: 2;
-    }
-    .tooltip {
-      position: absolute;
-      min-width: 60px;
-      min-height: 28px;
-      padding: 6px 12px 3px;
-      color: whitesmoke;
-      background: #245574;
-      border-radius: 2px;
-      pointer-events: none;
-      opacity: 0; //change to see tooltip
-    }
-  </style>
 </head>
 
 <body>
-  <header>
-    <h1>test</h1>
-  </header>
-  <div class="container">
-    <div id="map"></div>
-  </div>
-  <footer>
-    <div class="container">
-      <ul>
-        <li>Map authored by Rebekah Watkins</li>
-        <li>Data sourced from: </li>
-          <ul>
-            <li><a href="https://www.epa.gov/air-emissions-inventories/emissions-inventory-system-eis-gateway">Emissions Inventory System (EIS)</a></li>
-            <li><a href="https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html">Cartographic Boundary Files</a></li>
-          </ul>
-      </ul>
-    </div>
-  </footer>
+    <div class='flex-parent viewport-full relative scroll-hidden'>
+        <div class='flex-child w-full w300-ml absolute static-ml left bottom'>
+            <div class='flex-parent flex-parent--column viewport-third h-full hmax-full bg-white py18 px12'>
+                <div class='flex-child flex-child--grow px12 py12 scroll-auto'>
+                    <h1 class='txt-h1 mb6'>Collisions in Grand Rapids</h1>
+                    <h2 class='txt-xl mt18 mb12'>Historic collision trends: 2014 - 2016</h2>
+                    <div id='sidebar'>
+                      <p class='my6'>Collisions by Year</p>
+                      <p class='mb6'><span class='yearspark'></span></p>
+                      <p class='my6'>Deaths by Year</p>
+                      <p><span class='killedspark'></span></p>
+                      <hr class='txt-hr'>
+                      <p><b>Summary</b></p>
+                      <p>Total Collisions:
+                          <span></span>
+                      </p>
+                      <p class='girls'>Total Killed
+                          <span></span>:
+                          <span class='txt-l txt-bold'></span>
+                      </p>
+                      <p class='boys'>Total Injured
+                          <span></span>:
+                          <span class='txt-l txt-bold'></span>
+                      </p>
+                    </div>
+                </div>
+                <footer class='px12 py12 bg-gray-faint txt-s'>
+                    <ul>
+                        <li>Explore the raw
+                            <a class='link' href='https://grdata-grandrapids.opendata.arcgis.com/datasets/cgr-crash-data'> data </a>
+                        </li>
+                        <li>Map authored by
+                            <a class='link' href='https://github.com/rawa243'>Rebekah Watkins</a>
+                        </li>
+                    </ul>
+                </footer>
+            </div>
+        </div>
+        <div class='flex-child flex-child--grow viewport-twothirds viewport-full-ml'>
+            <div id="map" class='viewport-twothirds viewport-full-ml'></div>
 
-  <script src="https://d3js.org/d3.v5.js"></script>
-  <script src="https://unpkg.com/topojson@3"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script>
+              <!-- ui slider label -->
+              <div id='label' class='range bg-white round-ml px12'>
+                  <p><b>Year:
+                      <span>2014</span></b>
+                  </p>
+              </div>
 
-  // synchronous calls to data files
-  var limitsJson = d3.json("data/City_of_Grand_Rapids_City_Limits.json")
-      collisionsCSV = d3.csv("data/gr-collisions1416.csv")
+              <!-- ui slider -->
+              <div id='slider' class='range w240 bg-white round-ml px12'>
+                  <input type='range' min="2014" , max="2016" , value="1" , step="1" />
+              </div>
 
-  // use promise to call all data files, then send data to callback
-  Promise.all([limitsJson, collisionsCSV]).then(drawMap, error)
+              <!-- ui info panel -->
+              <div id='info' class='py6 px12 bg-white border border--gray-light round absolute wmax200 txt-l txt-bold' style="z-index: 1000">
+                  <p>
+                      Crash Type: <span></span>
+                  </p>
+                  <p class='year'>Year:
+                      <span></span>
+                  </p>
+                  <p class='cs'>Severity:
+                      <span></span>
+                  </p>
+                  <p class='hr'>Hit and Run:
+                      <span></span>
+                  </p>
+                  <p class='in'># Injured:
+                      <span></span>
+                  </p>
+                  <p class='ki'># Killed:
+                      <span></span>
+                  </p>
+              </div>
 
-  // function fired if there is an error
-  function error(error) {
-    console.log(error)
-  }
+    <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.21.2/assembly.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
+    <script src='js/app.js'></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
 
-  function drawMap(data) {
-    console.log(data)  // access to both datasets here
 
-    // data is array of our two datasets
-    var limitsData = data[0],
-        collisionsData = data[1]
-
-    var formatComma = d3.format(",")
-
-    // define width and height of our SVG
-    var width = 960,
-        height = 600
-
-    // define radius generator
-    var radius = 2
-
-    // define color generator
-    var color = d3.scaleOrdinal(d3.schemeSet1)
-
-    // select the map element
-    var svg = d3.select("#map")
-        .append("svg")  // append a new SVG element
-        .attr("width", width) // give the SVS element a width attribute and value
-        .attr("height", height) // same for the height
-console.log(limitsData);
-    // get the GeoJSON representation of the TopoJSON data
-    var geojson = topojson.feature(limitsData, {
-        type: "GeometryCollection",
-        geometries: limitsData.objects.City_of_Grand_Rapids_City_Limits.geometries
-    })
-
-    // define a projection using the US Albers USA
-    // fit the extent of the GeoJSON data to specified
-    // width and height
-    var projection = d3.geoAlbersUsa()
-        .fitSize([width, height], geojson)
-
-    // define a path generator, which will use
-    // the specified projection
-    var path = d3.geoPath()
-        .projection(projection)
-
-    // create and append a new SVG g element to the SVG
-    // var limits = svg.append("g")
-    //     .selectAll("path")  // select all the paths (that don't exist yet)
-    //     .data(geojson.features) // use the GeoJSON data
-    //     .enter()  // enter the selection
-    //     .append("path")  // append new path elements for each data feature
-    //     .attr("d", path)  // give each path a d attribute value
-    //     .attr("class", "limit")  // give each path a class of state
-
-    var collisions = svg.append("g")
-        .selectAll("circle")
-        .data(collisionsData) // use the GeoJSON data
-        .enter().append("circle")  // enter and append a circle element
-        .attr("cx", function (d) {  // define the x position
-           d.position = projection([d.Lon, d.Lat]);
-           return d.position[0];
-         })
-         .attr("cy", function (d) {
-           return d.position[1];
-         })
-         .attr("r", "2px")
-         .attr("class", "facility")
-         .style("fill", function (d) {  // give each facility a fill style
-           return color(d.YEAR)  // derive the hex color from the value
-         })
-        .on("mouseover", function(d) {  // when mousing over an element
-          d3.select(this).classed("hover", true).raise();  // select it, add a class name, and bring to front
-          tooltip.style("opacity", 1).html("<b>" + "Crash Type: " + "</b>" + d.CRASHTYPE + "</br>"
-                                          + "<b>" + "Year: " + "</b>" + + d.YEAR + "</br>"
-                                          + "<b>" + "Severity: " + "</b>" + d.CRASHSEVER + "</br>"
-                                          + "<b>" + "Hit and Run: " + "</b>" + d.HITANDRUN + "</br>"
-                                          + "<b>" + "# injured: " + "</b>" + d.NUMOFINJ + "</br>"
-                                          + "<b>" + "# killed: " + "</b>" + d.NUMOFKILL)  // make tooltip visible and update info
-        })
-        .on("mouseout", function() { // when mousing out of an element
-          d3.select(this).classed("hover", false) // remove the class
-          tooltip.style("opacity", 0)  // hide the element
-        })
-
-    // Create  div for the tooltip and hide with opacity
-    var tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-
-    // select the map element
-    d3.select("#map")
-      .on("mousemove", function (event) { // when mouse moves over it
-        // update the position of the tooltip
-        tooltip.style("left", (d3.event.pageX + 10) + "px")
-          .style("top", (d3.event.pageY - 30) + "px");
-      })
-
-    // drawLegend(svg, width, height);
-    //
-    // function drawLegend(svg, width, height) {
-    //
-    //   // append a new g element
-    //   var legend = svg.append("g")
-    //       .attr("dy", "1.3em")  // adjust the vertical displacement
-    //       .attr("class", "legend")  // add a class (for CSS)
-    //       .attr("transform", "translate(" + (width - 50) + "," + (height - 20) + ")")
-    //       .selectAll("g")  // select all new g elements
-    //       .data([5e6, 2e7])  // apply two numbers (approx median/max)
-    //       .enter().append("g");  // enter and append the two new g elements
-    //
-    //   // place the circles vertically and apply radius
-    //   legend.append("circle")
-    //     .attr("cy", function (d) {
-    //       return -radius(d);
-    //     })
-    //     .attr("r", radius);
-    //
-    //   // append text to each
-    //   legend.append("text")
-    //     .attr("y", function (d) {
-    //       return -2 * radius(d);
-    //     })
-    //     .attr("dy", "1.3em")
-    //     .text(d3.format(".1s"));
-    //
-    //   // append a legend label at bottom
-    //   legend.append("text")
-    //     .attr("y", 16)
-    //     .text("metric tons")
-    //
-    // }  // end drawLegend()
-    //
-     addFilter(collisionsData, collisions); // call filter function
-
-    //Create Filter
-    function addFilter(collisionsData, collisions) {
-
-      // select the map element
-      var dropdown = d3.select('#map')
-        .append('select')  // append a new select element
-        .attr('class', 'filter')  // add a class name
-        .on('change', onchange)  // listen for change
-
-      // array to hold select options
-      var uniqueTypes = ["All Years"];
-
-      // loop through all features and push unique types to array
-      collisionsData.forEach(function (collisions) {
-        // if the type is not included in the array, push it to the array
-        if (!uniqueTypes.includes(collisions.YEAR)) uniqueTypes.push(collisions.YEAR)
-      })
-
-      // sort types backwards alphabeticaly in array
-      uniqueTypes.sort().reverse();
-
-      // select all the options (that don't exist yet)
-      dropdown.selectAll('option')
-        .data(uniqueTypes).enter() // attach our array as data
-        .append("option") // append a new option element for each data item
-        .text(function (d) {
-          return d // use the item as text
-        })
-        .attr("value", function (d) {
-          return d // use the time as value attribute
-        })
-
-      function onchange() {
-        // get the current value from the select element
-        var val = d3.select('select').property('value')
-
-        // style the display of the collisions
-        collisions.style("display", function (d) {
-          // if it's our default, show them all with inline
-          if (val === "All Years") return "inline"
-          // otherwise, if each year doesn't match the value
-          if (d.YEAR != val) return "none"  // don't display it
-        })
-      }
-    }
-  }
-  </script>
 </body>
 
 </html>

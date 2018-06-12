@@ -52,8 +52,8 @@
             color: 'red'
         });
 
-        // enable slider UI and label
-        //sequenceUI(collisionsLayer, 2014);
+        // enable filter UI
+      //  drawFilter(collisionsLayer);
 
         // update the hover window with current grade's
         retreiveInfo(collisionsLayer);
@@ -61,59 +61,31 @@
 
     } // end drawMap()
 
-    // function sequenceUI(collisionsLayer, currentYear) {
-    //
-    //     // create Leaflet control for the slider
-    //     var sliderControl = L.control({
-    //         position: 'bottomleft'
-    //     });
-    //
-    //     sliderControl.onAdd = function (map) {
-    //         var controls = L.DomUtil.get("slider");
-    //
-    //         L.DomEvent.disableScrollPropagation(controls);
-    //         L.DomEvent.disableClickPropagation(controls);
-    //
-    //         return controls;
-    //     }
-    //
-    //     sliderControl.addTo(map);
-    //
-    //     // create Leaflet control for the legend
-    //     var sliderLabel = L.control({
-    //         position: 'bottomleft'
-    //     });
-    //
-    //
-    //
-    //     // when the control is added to the map
-    //     sliderLabel.onAdd = function (map) {
-    //
-    //         // select the legend using id attribute of legend
-    //         var label = L.DomUtil.get("label");
-    //
-    //         // disable scroll and click functionality
-    //         L.DomEvent.disableScrollPropagation(label);
-    //         L.DomEvent.disableClickPropagation(label);
-    //
-    //         // return the selection
-    //         return label;
-    //
-    //     }
-    //
-    //     sliderLabel.addTo(map);
-    //
-    //     //select the slider's input and listen for change
-    //     $('#slider input[type=range]')
-    //         .on('input', function () {
-    //             // current value of slider is current year
-    //             var currentYear = this.value;
-    //
-    //             // populate HTML elements with relevant info
-    //             $('#label span').html(currentYear);
-    //         });
-    //
-    // }
+//     function drawFilter(collisionsLayer) {
+// console.log(data);
+//         var legend = L.control({position: 'topright'});
+//
+//         legend.onAdd = function (map) {
+//             var div = L.DomUtil.create('div', 'info legend');
+//             div.innerHTML = '<select><option value="all">All Years</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option></select>';
+//             // div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+//             div.firstChild.onchange = function(event) {
+//               var selectedYear = event.target.value;
+//               var filteredData = data.layer.feature(row => row.properties.YEAR === selectedYear)
+//               //console.log(filteredData);
+//               // if (selectedYear === '2014') {
+//               // } else if (selectedYear === '2015') {
+//               // } else if (selectedYear === '2016') {
+//               // } else {
+//               // }
+//             }
+//
+//             return div;
+//         };
+//
+//         legend.addTo(map);
+//
+//     }
 
     function retreiveInfo(collisionsLayer) {
 
@@ -141,6 +113,34 @@
             // raise opacity level as visual affordance
             e.layer.setStyle({
                 fillOpacity: .6
+            });
+
+            // empty arrays for boys and girls values
+            var collisionValues = [],
+                killedValues = [];
+
+            // loop through the years and push values into those arrays
+            for (var i = 1; i <= 3; i++) {
+                collisionValues.push(props.YEAR['C' + i]);
+                killedValues.push(props.YEAR['K' + i]);
+            }
+
+            $('.yearspark').sparkline(collisionValues, {
+                width: '200px',
+                height: '30px',
+                lineColor: '#D96D02',
+                fillColor: '#d98939 ',
+                spotRadius: 0,
+                lineWidth: 2
+            });
+
+            $('.killedspark').sparkline(killedValues, {
+                width: '200px',
+                height: '30px',
+                lineColor: '#6E77B0',
+                fillColor: '#878db0',
+                spotRadius: 0,
+                lineWidth: 2
             });
 
         });
