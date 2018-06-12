@@ -168,7 +168,7 @@ console.log(limitsData);
     //     .attr("d", path)  // give each path a d attribute value
     //     .attr("class", "limit")  // give each path a class of state
 
-    var facilities = svg.append("g")
+    var collisions = svg.append("g")
         .selectAll("circle")
         .data(collisionsData) // use the GeoJSON data
         .enter().append("circle")  // enter and append a circle element
@@ -245,53 +245,53 @@ console.log(limitsData);
     //
     // }  // end drawLegend()
     //
-    // addFilter(facilityData, facilities); // call filter function
-    //
-    // //Create Filter
-    // function addFilter(facilityData, facilities) {
-    //
-    //   // select the map element
-    //   var dropdown = d3.select('#map')
-    //     .append('select')  // append a new select element
-    //     .attr('class', 'filter')  // add a class name
-    //     .on('change', onchange)  // listen for change
-    //
-    //   // array to hold select options
-    //   var uniqueTypes = ["All facilities"];
-    //
-    //   // loop through all features and push unique types to array
-    //   facilityData.forEach(function (facility) {
-    //     // if the type is not included in the array, push it to the array
-    //     if (!uniqueTypes.includes(facility.Industry_Type)) uniqueTypes.push(facility.Industry_Type)
-    //   })
-    //
-    //   // sort types alphabeticaly in array
-    //   uniqueTypes.sort();
-    //
-    //   // select all the options (that don't exist yet)
-    //   dropdown.selectAll('option')
-    //     .data(uniqueTypes).enter() // attach our array as data
-    //     .append("option") // append a new option element for each data item
-    //     .text(function (d) {
-    //       return d // use the item as text
-    //     })
-    //     .attr("value", function (d) {
-    //       return d // use the time as value attribute
-    //     })
-    //
-    //   function onchange() {
-    //     // get the current value from the select element
-    //     var val = d3.select('select').property('value')
-    //
-    //     // style the display of the facilities
-    //     facilities.style("display", function (d) {
-    //       // if it's our default, show them all with inline
-    //       if (val === "All facilities") return "inline"
-    //       // otherwise, if each industry type doesn't match the value
-    //       if (d.Industry_Type != val) return "none"  // don't display it
-    //     })
-    //   }
-    // }
+     addFilter(collisionsData, collisions); // call filter function
+
+    //Create Filter
+    function addFilter(collisionsData, collisions) {
+
+      // select the map element
+      var dropdown = d3.select('#map')
+        .append('select')  // append a new select element
+        .attr('class', 'filter')  // add a class name
+        .on('change', onchange)  // listen for change
+
+      // array to hold select options
+      var uniqueTypes = ["All Years"];
+
+      // loop through all features and push unique types to array
+      collisionsData.forEach(function (collisions) {
+        // if the type is not included in the array, push it to the array
+        if (!uniqueTypes.includes(collisions.YEAR)) uniqueTypes.push(collisions.YEAR)
+      })
+
+      // sort types backwards alphabeticaly in array
+      uniqueTypes.sort().reverse();
+
+      // select all the options (that don't exist yet)
+      dropdown.selectAll('option')
+        .data(uniqueTypes).enter() // attach our array as data
+        .append("option") // append a new option element for each data item
+        .text(function (d) {
+          return d // use the item as text
+        })
+        .attr("value", function (d) {
+          return d // use the time as value attribute
+        })
+
+      function onchange() {
+        // get the current value from the select element
+        var val = d3.select('select').property('value')
+
+        // style the display of the collisions
+        collisions.style("display", function (d) {
+          // if it's our default, show them all with inline
+          if (val === "All Years") return "inline"
+          // otherwise, if each year doesn't match the value
+          if (d.YEAR != val) return "none"  // don't display it
+        })
+      }
+    }
   }
   </script>
 </body>
