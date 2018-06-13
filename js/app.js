@@ -53,7 +53,7 @@
         });
 
         // enable filter UI
-      //  drawFilter(collisionsLayer);
+        //drawFilter(collisionsLayer);
 
         // update the hover window with current grade's
         retreiveInfo(collisionsLayer);
@@ -61,31 +61,31 @@
 
     } // end drawMap()
 
-//     function drawFilter(collisionsLayer) {
-// console.log(data);
-//         var legend = L.control({position: 'topright'});
-//
-//         legend.onAdd = function (map) {
-//             var div = L.DomUtil.create('div', 'info legend');
-//             div.innerHTML = '<select><option value="all">All Years</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option></select>';
-//             // div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
-//             div.firstChild.onchange = function(event) {
-//               var selectedYear = event.target.value;
-//               var filteredData = data.layer.feature(row => row.properties.YEAR === selectedYear)
-//               //console.log(filteredData);
-//               // if (selectedYear === '2014') {
-//               // } else if (selectedYear === '2015') {
-//               // } else if (selectedYear === '2016') {
-//               // } else {
-//               // }
-//             }
-//
-//             return div;
-//         };
-//
-//         legend.addTo(map);
-//
-//     }
+    function drawFilter(collisionsLayer) {
+console.log(data);
+        var legend = L.control({position: 'topright'});
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = '<select><option value="all">All Years</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option></select>';
+            // div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+            div.firstChild.onchange = function(event) {
+              var selectedYear = event.target.value;
+              var filteredData = data.layer.feature(row => row.properties.YEAR === selectedYear)
+              //console.log(filteredData);
+              // if (selectedYear === '2014') {
+              // } else if (selectedYear === '2015') {
+              // } else if (selectedYear === '2016') {
+              // } else {
+              // }
+            }
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+    }
 
     function retreiveInfo(collisionsLayer) {
 
