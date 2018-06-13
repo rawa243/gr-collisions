@@ -45,7 +45,16 @@
               height: '50px',
               barSpacing: 5,
               barColor: '#9d4345',
-              zeroColor: '#ffffff'
+              zeroColor: '#ffffff',
+              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Collisions:</b> {{value}}',
+              tooltipValueLookups: {
+                  names: {
+                      0: '',
+                      1: '2014',
+                      2: '2015',
+                      3: '2016'
+                  }
+              }
           });
 
           $('.killedspark').sparkline(Object.values(killed_hash), {
@@ -55,7 +64,16 @@
               height: '50px',
               barSpacing: 5,
               barColor: '#9d4345',
-              zeroColor: '#ffffff'
+              zeroColor: '#ffffff',
+              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Deaths:</b> {{value}}',
+              tooltipValueLookups: {
+                  names: {
+                      0: '',
+                      1: '2014',
+                      2: '2015',
+                      3: '2016'
+                  }
+              }
           });
 
           $('.injuredspark').sparkline(Object.values(injured_hash), {
@@ -65,7 +83,16 @@
               height: '50px',
               barSpacing: 5,
               barColor: '#9d4345',
-              zeroColor: '#ffffff'
+              zeroColor: '#ffffff',
+              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Injuries:</b> {{value}}',
+              tooltipValueLookups: {
+                  names: {
+                      0: '',
+                      1: '2014',
+                      2: '2015',
+                      3: '2016'
+                  }
+              }
           });
 
           $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
