@@ -27,8 +27,40 @@
     //Error test for loading data
     omnivore.csv('data/gr-collisions1416.csv')
         .on('ready', function(e) {
-          console.log(e.target.toGeoJSON())
-          drawMap(data = e.target.toGeoJSON());
+          data = e.target.toGeoJSON()
+
+          killed_hash = { 2014: 0, 2015: 0, 2016: 0}
+          injured_hash = { 2014: 0, 2015: 0, 2016: 0}
+          collisions_hash = { 2014: 0, 2015: 0, 2016: 0}
+          data.features.forEach(c => {
+            killed_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFKILL)
+            injured_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFINJ)
+            collisions_hash[c.properties.YEAR] += 1
+          })
+  
+          $('.yearspark').sparkline(Object.values(collisions_hash), {
+              type: 'bar',
+              barWidth: 70,
+              width: '300px',
+              height: '50px',
+              barSpacing: 10,
+              barColor: '#9d4345'
+          });
+
+          $('.killedspark').sparkline(Object.values(killed_hash), {
+              type: 'bar',
+              width: '300px',
+              barWidth: 70,
+              height: '50px',
+              barSpacing: 10,
+              barColor: '#9d4345'
+          });
+
+          $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
+          $('#totalKilled').text(Object.values(killed_hash).reduce((a, b) => a + b, 0))
+          $('#totalInjured').text(Object.values(injured_hash).reduce((a, b) => a + b, 0))
+
+          drawMap(data);
         })
         .on('error', function(e) {
             console.log(e.error[0].message);
@@ -55,6 +87,7 @@
       });
 
       retreiveInfo()
+
     }
 
     function drawMap(data) {
@@ -126,21 +159,21 @@
                 killedValues.push(props.YEAR['K' + i]);
             }
 
-            $('.yearspark').sparkline([50,70,90,150], {
-                type: 'bar',
-                width: '300px',
-                height: '50px',
-                barSpacing: 10,
-                barColor: '#9d4345'
-            });
-
-            $('.killedspark').sparkline(killedValues, {
-                type: 'bar',
-                width: '300px',
-                height: '50px',
-                barSpacing: 10,
-                barColor: '#9d4345'
-            });
+            // $('.yearspark').sparkline([50,130,90,150], {
+            //     type: 'bar',
+            //     width: '300px',
+            //     height: '50px',
+            //     barSpacing: 10,
+            //     barColor: '#9d4345'
+            // });
+            //
+            // $('.killedspark').sparkline(killedValues, {
+            //     type: 'bar',
+            //     width: '300px',
+            //     height: '50px',
+            //     barSpacing: 10,
+            //     barColor: '#9d4345'
+            // });
 
         });
 
