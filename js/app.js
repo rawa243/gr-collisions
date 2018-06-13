@@ -125,22 +125,22 @@
                 killedValues.push(props.YEAR['K' + i]);
             }
 
-            $('.yearspark').sparkline(collisionValues, {
-                width: '200px',
-                height: '30px',
-                lineColor: '#D96D02',
-                fillColor: '#d98939 ',
-                spotRadius: 0,
-                lineWidth: 2
+            console.log(collisionValues);
+
+            $('.yearspark').sparkline([50,70,90,150], {
+                type: 'bar',
+                width: '300px',
+                height: '50px',
+                barSpacing: 10,
+                barColor: '#9d4345'
             });
 
             $('.killedspark').sparkline(killedValues, {
-                width: '200px',
-                height: '30px',
-                lineColor: '#6E77B0',
-                fillColor: '#878db0',
-                spotRadius: 0,
-                lineWidth: 2
+                type: 'bar',
+                width: '300px',
+                height: '50px',
+                barSpacing: 10,
+                barColor: '#9d4345'
             });
 
         });
