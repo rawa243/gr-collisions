@@ -29,31 +29,43 @@
         .on('ready', function(e) {
           data = e.target.toGeoJSON()
 
-          killed_hash = { 2014: 0, 2015: 0, 2016: 0}
-          injured_hash = { 2014: 0, 2015: 0, 2016: 0}
-          collisions_hash = { 2014: 0, 2015: 0, 2016: 0}
+          killed_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
+          injured_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
+          collisions_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
           data.features.forEach(c => {
             killed_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFKILL)
             injured_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFINJ)
             collisions_hash[c.properties.YEAR] += 1
           })
-  
+
           $('.yearspark').sparkline(Object.values(collisions_hash), {
               type: 'bar',
-              barWidth: 70,
+              barWidth: 50,
               width: '300px',
               height: '50px',
-              barSpacing: 10,
-              barColor: '#9d4345'
+              barSpacing: 5,
+              barColor: '#9d4345',
+              zeroColor: '#ffffff'
           });
 
           $('.killedspark').sparkline(Object.values(killed_hash), {
               type: 'bar',
               width: '300px',
-              barWidth: 70,
+              barWidth: 50,
               height: '50px',
-              barSpacing: 10,
-              barColor: '#9d4345'
+              barSpacing: 5,
+              barColor: '#9d4345',
+              zeroColor: '#ffffff'
+          });
+
+          $('.injuredspark').sparkline(Object.values(injured_hash), {
+              type: 'bar',
+              width: '300px',
+              barWidth: 50,
+              height: '50px',
+              barSpacing: 5,
+              barColor: '#9d4345',
+              zeroColor: '#ffffff'
           });
 
           $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
