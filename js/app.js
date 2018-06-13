@@ -21,63 +21,65 @@
         accessToken: accessToken
     }).addTo(map);
 
+    var data;
+    var collisionsLayer;
     //Add data to the map
     //Error test for loading data
     omnivore.csv('data/gr-collisions1416.csv')
         .on('ready', function(e) {
-          drawMap(e.target.toGeoJSON());
+          console.log(e.target.toGeoJSON())
+          drawMap(data = e.target.toGeoJSON());
         })
         .on('error', function(e) {
             console.log(e.error[0].message);
     });
 
+    function drawPointsAndToolTips(data) {
+      var options = {
+          pointToLayer: function (feature, ll) {
+              return L.circleMarker(ll, {
+                  radius: 2,
+                  opacity: 1,
+                  weight: 1,
+              })
+          }
+      }
+
+      collisionsLayer = L.geoJson(data, options).addTo(map)
+
+      // fit the bounds of the map to one of the layers
+      map.fitBounds(collisionsLayer.getBounds());
+
+      collisionsLayer.setStyle({
+          color: '#9d4345'
+      });
+
+      retreiveInfo()
+    }
+
     function drawMap(data) {
+      drawPointsAndToolTips(data);
+      drawFilter();
+    }
 
-        var options = {
-            pointToLayer: function (feature, ll) {
-                return L.circleMarker(ll, {
-                    radius: 2,
-                    opacity: 1,
-                    weight: 1,
-                })
-            }
-        }
+    function drawFilter() {
 
-        var collisionsLayer = L.geoJson(data, options).addTo(map)
-
-        // fit the bounds of the map to one of the layers
-        map.fitBounds(collisionsLayer.getBounds());
-
-        collisionsLayer.setStyle({
-            color: '#9d4345'
-        });
-
-        // enable filter UI
-        //drawFilter(collisionsLayer);
-
-        // update the hover window with current grade's
-        retreiveInfo(collisionsLayer);
-
-
-    } // end drawMap()
-
-    function drawFilter(collisionsLayer) {
-console.log(data);
         var legend = L.control({position: 'topright'});
 
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend');
             div.innerHTML = '<select><option value="all">All Years</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option></select>';
-            // div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
             div.firstChild.onchange = function(event) {
               var selectedYear = event.target.value;
-              var filteredData = data.layer.feature(row => row.properties.YEAR === selectedYear)
-              //console.log(filteredData);
-              // if (selectedYear === '2014') {
-              // } else if (selectedYear === '2015') {
-              // } else if (selectedYear === '2016') {
-              // } else {
-              // }
+              if (selectedYear === '2014' || selectedYear === '2015' || selectedYear === '2016') {
+                var filteredData = data.features.filter(row => row.properties.YEAR === selectedYear)
+                var filtereDataComplete = { type: 'FeatureCollection', features: filteredData}
+                map.removeLayer(collisionsLayer)
+                drawPointsAndToolTips(filtereDataComplete)
+              } else {
+                map.removeLayer(collisionsLayer)
+                drawPointsAndToolTips(data)
+              }
             }
 
             return div;
@@ -87,8 +89,7 @@ console.log(data);
 
     }
 
-    function retreiveInfo(collisionsLayer) {
-
+    function retreiveInfo() {
         // select the element and reference with variable
         // and hide it from view initially
         var info = $('#info').hide();
@@ -124,8 +125,6 @@ console.log(data);
                 collisionValues.push(props.YEAR['C' + i]);
                 killedValues.push(props.YEAR['K' + i]);
             }
-
-            console.log(collisionValues);
 
             $('.yearspark').sparkline([50,70,90,150], {
                 type: 'bar',
