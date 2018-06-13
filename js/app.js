@@ -49,7 +49,7 @@
         map.fitBounds(collisionsLayer.getBounds());
 
         collisionsLayer.setStyle({
-            color: 'red'
+            color: '#9d4345'
         });
 
         // enable filter UI

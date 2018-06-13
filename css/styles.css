@@ -1,11 +1,11 @@
 /* custom CSS rules */
 
 #map {
-    background: ##fbb4ae;
+    background: #fbb4ae;
 }
 
 h1 {
-    color: red;
+    color: #9d4345;
 }
 
 /* display none for layout but be careful of license restrictions */
