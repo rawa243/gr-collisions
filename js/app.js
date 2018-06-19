@@ -44,7 +44,7 @@
 
     // Load layer based on zoom level
     map.on('zoomend', function() {
-        if (map.getZoom() <16){
+        if (map.getZoom() <15){
             if (map.hasLayer(collisionsLayer)) {
                 map.removeLayer(collisionsLayer);
                 map.addLayer(hexbinLayer);
@@ -54,7 +54,7 @@
                 map.addLayer(hexbinLayer);
             }
         }
-        if (map.getZoom() >= 16){
+        if (map.getZoom() >= 15){
             if (map.hasLayer(collisionsLayer)){
                 console.log(map.getZoom()+" Points already active");
             } else if(map.hasLayer(hexbinLayer)) {
@@ -124,7 +124,32 @@
             });
         });
 
-  }
+        drawLegend(breaks, colorize);
+    }
+
+
+    function drawLegend(breaks, colorize) {
+        var legendControl = L.control({
+            position: 'bottomright'
+        });
+        legendControl.onAdd = function(map) {
+            var legend = L.DomUtil.create('div', 'legend');
+            return legend;
+        };
+        legendControl.addTo(map);
+        //  create legend text
+        var legend = $('.legend').html("<h3>Total Collisions</h3><ul>");
+        for (var i = 0; i < breaks.length - 1; i++) {
+            var color = colorize(breaks[i], breaks);
+            var classRange = '<li><span style="background:' + color + '"></span> ' +
+                breaks[i].toLocaleString() + ' &mdash; ' +
+                breaks[i + 1].toLocaleString() + '</li>'
+            //  append the list item to list
+            $('.legend ul').append(classRange);
+        }
+        //  close the unordered list
+        legend.append("</ul>");
+    }
 
     function drawBarCharts(data) {
         var killed_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0},
@@ -214,10 +239,6 @@
         drawPointsAndToolTips(data);
         drawHexbin(hexbinData);
         drawFilter();
-    }
-
-    function chooseLayer() {
-
     }
 
     function drawFilter() {
