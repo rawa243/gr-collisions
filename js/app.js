@@ -170,6 +170,7 @@
             barSpacing: 5,
             barColor: '#9d4345',
             zeroColor: '#ffffff',
+            highlightSpotColor: false,
             tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Collisions:</b> {{value}}',
             tooltipValueLookups: {
                 names: {
@@ -189,6 +190,7 @@
             barSpacing: 5,
             barColor: '#9d4345',
             zeroColor: '#ffffff',
+            highlightSpotColor: false,
             tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Deaths:</b> {{value}}',
             tooltipValueLookups: {
                 names: {
@@ -208,6 +210,7 @@
             barSpacing: 5,
             barColor: '#9d4345',
             zeroColor: '#ffffff',
+            highlightSpotColor: false,
             tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Injuries:</b> {{value}}',
             tooltipValueLookups: {
                 names: {
