@@ -23,81 +23,11 @@
 
     var data;
     var collisionsLayer;
-    //Add data to the map
-    //Error test for loading data
+
+    //Convert data and Error test for loading data
     omnivore.csv('data/gr-collisions1416.csv')
         .on('ready', function(e) {
           data = e.target.toGeoJSON()
-
-          killed_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
-          injured_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
-          collisions_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0}
-          data.features.forEach(c => {
-            killed_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFKILL)
-            injured_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFINJ)
-            collisions_hash[c.properties.YEAR] += 1
-          })
-
-          $('.yearspark').sparkline(Object.values(collisions_hash), {
-              type: 'bar',
-              barWidth: 50,
-              width: '300px',
-              height: '50px',
-              barSpacing: 5,
-              barColor: '#9d4345',
-              zeroColor: '#ffffff',
-              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Collisions:</b> {{value}}',
-              tooltipValueLookups: {
-                  names: {
-                      0: '',
-                      1: '2014',
-                      2: '2015',
-                      3: '2016'
-                  }
-              }
-          });
-
-          $('.killedspark').sparkline(Object.values(killed_hash), {
-              type: 'bar',
-              width: '300px',
-              barWidth: 50,
-              height: '50px',
-              barSpacing: 5,
-              barColor: '#9d4345',
-              zeroColor: '#ffffff',
-              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Deaths:</b> {{value}}',
-              tooltipValueLookups: {
-                  names: {
-                      0: '',
-                      1: '2014',
-                      2: '2015',
-                      3: '2016'
-                  }
-              }
-          });
-
-          $('.injuredspark').sparkline(Object.values(injured_hash), {
-              type: 'bar',
-              width: '300px',
-              barWidth: 50,
-              height: '50px',
-              barSpacing: 5,
-              barColor: '#9d4345',
-              zeroColor: '#ffffff',
-              tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Injuries:</b> {{value}}',
-              tooltipValueLookups: {
-                  names: {
-                      0: '',
-                      1: '2014',
-                      2: '2015',
-                      3: '2016'
-                  }
-              }
-          });
-
-          $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
-          $('#totalKilled').text(Object.values(killed_hash).reduce((a, b) => a + b, 0))
-          $('#totalInjured').text(Object.values(injured_hash).reduce((a, b) => a + b, 0))
 
           drawMap(data);
         })
@@ -106,32 +36,106 @@
     });
 
     function drawPointsAndToolTips(data) {
-      var options = {
-          pointToLayer: function (feature, ll) {
-              return L.circleMarker(ll, {
-                  radius: 2,
-                  opacity: 1,
-                  weight: 1,
-              })
-          }
-      }
+        var options = {
+            pointToLayer: function (feature, ll) {
+                return L.circleMarker(ll, {
+                    radius: 2,
+                    opacity: 1,
+                    weight: 1,
+                })
+            }
+        }
 
-      collisionsLayer = L.geoJson(data, options).addTo(map)
+        collisionsLayer = L.geoJson(data, options).addTo(map)
 
-      // fit the bounds of the map to one of the layers
-      map.fitBounds(collisionsLayer.getBounds());
+        // fit the bounds of the map to one of the layers
+        map.fitBounds(collisionsLayer.getBounds());
 
-      collisionsLayer.setStyle({
-          color: '#9d4345'
-      });
+        collisionsLayer.setStyle({
+            color: '#9d4345'
+        });
 
-      retreiveInfo()
+        retreiveInfo();
+    }
+
+    function drawBarCharts(data) {
+        var killed_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0},
+            injured_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0},
+            collisions_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0};
+
+        data.features.forEach(c => {
+            killed_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFKILL)
+            injured_hash[c.properties.YEAR] += parseInt(c.properties.NUMOFINJ)
+            collisions_hash[c.properties.YEAR] += 1
+        })
+
+        $('.yearspark').sparkline(Object.values(collisions_hash), {
+            type: 'bar',
+            barWidth: 50,
+            width: '300px',
+            height: '50px',
+            barSpacing: 5,
+            barColor: '#9d4345',
+            zeroColor: '#ffffff',
+            tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Collisions:</b> {{value}}',
+            tooltipValueLookups: {
+                names: {
+                    0: '',
+                    1: '2014',
+                    2: '2015',
+                    3: '2016'
+                }
+            }
+        });
+
+        $('.killedspark').sparkline(Object.values(killed_hash), {
+            type: 'bar',
+            width: '300px',
+            barWidth: 50,
+            height: '50px',
+            barSpacing: 5,
+            barColor: '#9d4345',
+            zeroColor: '#ffffff',
+            tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Deaths:</b> {{value}}',
+            tooltipValueLookups: {
+                names: {
+                    0: '',
+                    1: '2014',
+                    2: '2015',
+                    3: '2016'
+                }
+            }
+        });
+
+        $('.injuredspark').sparkline(Object.values(injured_hash), {
+            type: 'bar',
+            width: '300px',
+            barWidth: 50,
+            height: '50px',
+            barSpacing: 5,
+            barColor: '#9d4345',
+            zeroColor: '#ffffff',
+            tooltipFormat: '<span style="color: {{color}}">&#9679;</span></span><b>Year:</b> {{offset:names}}</br><b>Injuries:</b> {{value}}',
+            tooltipValueLookups: {
+                names: {
+                    0: '',
+                    1: '2014',
+                    2: '2015',
+                    3: '2016'
+                }
+            }
+        });
+
+        $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
+        $('#totalKilled').text(Object.values(killed_hash).reduce((a, b) => a + b, 0))
+        $('#totalInjured').text(Object.values(injured_hash).reduce((a, b) => a + b, 0))
 
     }
 
     function drawMap(data) {
-      drawPointsAndToolTips(data);
-      drawFilter();
+        drawBarCharts(data);
+        drawPointsAndToolTips(data);
+        drawFilter();
     }
 
     function drawFilter() {
@@ -187,32 +191,6 @@
             e.layer.setStyle({
                 fillOpacity: .6
             });
-
-            // empty arrays for boys and girls values
-            var collisionValues = [],
-                killedValues = [];
-
-            // loop through the years and push values into those arrays
-            for (var i = 1; i <= 3; i++) {
-                collisionValues.push(props.YEAR['C' + i]);
-                killedValues.push(props.YEAR['K' + i]);
-            }
-
-            // $('.yearspark').sparkline([50,130,90,150], {
-            //     type: 'bar',
-            //     width: '300px',
-            //     height: '50px',
-            //     barSpacing: 10,
-            //     barColor: '#9d4345'
-            // });
-            //
-            // $('.killedspark').sparkline(killedValues, {
-            //     type: 'bar',
-            //     width: '300px',
-            //     height: '50px',
-            //     barSpacing: 10,
-            //     barColor: '#9d4345'
-            // });
 
         });
 
