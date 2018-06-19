@@ -44,7 +44,7 @@
 
     // Load layer based on zoom level
     map.on('zoomend', function() {
-        if (map.getZoom() <13){
+        if (map.getZoom() <16){
             if (map.hasLayer(collisionsLayer)) {
                 map.removeLayer(collisionsLayer);
                 map.addLayer(hexbinLayer);
@@ -54,7 +54,7 @@
                 map.addLayer(hexbinLayer);
             }
         }
-        if (map.getZoom() >= 13){
+        if (map.getZoom() >= 16){
             if (map.hasLayer(collisionsLayer)){
                 console.log(map.getZoom()+" Points already active");
             } else if(map.hasLayer(hexbinLayer)) {
@@ -91,16 +91,39 @@
 
     function drawHexbin(hexbinData) {
         hexbinLayer = L.geoJson(hexbinData, {
-				style: function(feature) {
-					// style counties with initial default path options
-					return {
-						color: '#dddddd',
-						weight: 2,
-						fillOpacity: 1,
-						fillColor: '#1f78b4'
-					};
-				}
-    }).addTo(map);
+    				style: function(feature) {
+    					return {
+    						stroke: false,
+    						fillOpacity: 0.8,
+    						fillColor: '#1f78b4'
+    					};
+    				}
+        }).addTo(map);
+
+        // empty array to store all the data values
+        var counts = [];
+        // iterate through all the hexs
+        hexbinData.features.forEach(function(hex) {
+            // iterate through all the props of each hex
+            for (var prop in hex.properties) {
+                // if the attribute is a count
+                if (prop == "count")  {
+                    // push that attribute value into the array
+                    counts.push(Number(hex.properties[prop]));
+                }
+            }
+        });
+
+        var breaks = chroma.limits(counts, 'k', 5);
+        var colorize = chroma.scale(chroma.brewer.Reds).classes(breaks).mode('lab');
+
+        hexbinLayer.eachLayer(function(layer) {
+            var props = layer.feature.properties;
+            layer.setStyle({
+                fillColor: colorize(Number(props["count"]))
+            });
+        });
+
   }
 
     function drawBarCharts(data) {
