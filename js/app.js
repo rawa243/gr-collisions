@@ -126,10 +126,19 @@
             }
         });
 
-        $('#totalCollisions').text(Object.values(collisions_hash).reduce((a, b) => a + b, 0))
-        $('#totalKilled').text(Object.values(killed_hash).reduce((a, b) => a + b, 0))
-        $('#totalInjured').text(Object.values(injured_hash).reduce((a, b) => a + b, 0))
 
+        var numOfCollisions = Object.values(collisions_hash).reduce((a, b) => a + b, 0);
+        var numOfKilled = Object.values(killed_hash).reduce((a, b) => a + b, 0);
+        var numOfInjured = Object.values(injured_hash).reduce((a, b) => a + b, 0);
+
+        $('#totalCollisions').text(numberWithCommas(numOfCollisions))
+        $('#totalKilled').text(numberWithCommas(numOfKilled))
+        $('#totalInjured').text(numberWithCommas(numOfInjured))
+
+    }
+
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     function drawMap(data) {
