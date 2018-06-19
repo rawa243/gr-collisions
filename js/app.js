@@ -21,19 +21,50 @@
         accessToken: accessToken
     }).addTo(map);
 
-    var data;
-    var collisionsLayer;
+    var data,
+        collisionsLayer,
+        hexbinData,
+        hexbinLayer;
 
-    //Convert data and Error test for loading data
-    omnivore.csv('data/gr-collisions1416.csv')
-        .on('ready', function(e) {
-          data = e.target.toGeoJSON()
+    // AJAX request for GeoJSON data and csv data
+    $.getJSON("data/gr-collisions1416_50mHexbin.json", function(hexbinData) {
 
-          drawMap(data);
-        })
-        .on('error', function(e) {
-            console.log(e.error[0].message);
-    });
+        //Convert data and Error test for loading data
+        omnivore.csv('data/gr-collisions1416.csv')
+            .on('ready', function(e) {
+              data = e.target.toGeoJSON()
+
+              drawMap(data, hexbinData);
+            })
+            .on('error', function(e) {
+                console.log(e.error[0].message);
+        });
+
+    });  // end of $.getJSON()
+
+    // Load layer based on zoom level
+    map.on('zoomend', function() {
+        if (map.getZoom() <13){
+            if (map.hasLayer(collisionsLayer)) {
+                map.removeLayer(collisionsLayer);
+                map.addLayer(hexbinLayer);
+            } else if (map.hasLayer(hexbinLayer)) {
+                console.log(map.getZoom()+ " Hexbin already active");
+            } else {
+                map.addLayer(hexbinLayer);
+            }
+        }
+        if (map.getZoom() >= 13){
+            if (map.hasLayer(collisionsLayer)){
+                console.log(map.getZoom()+" Points already active");
+            } else if(map.hasLayer(hexbinLayer)) {
+                map.removeLayer(hexbinLayer);
+                map.addLayer(collisionsLayer);
+            } else {
+                map.addLayer(collisionsLayer);
+            }
+        }
+    })
 
     function drawPointsAndToolTips(data) {
         var options = {
@@ -57,6 +88,20 @@
 
         retreiveInfo();
     }
+
+    function drawHexbin(hexbinData) {
+        hexbinLayer = L.geoJson(hexbinData, {
+				style: function(feature) {
+					// style counties with initial default path options
+					return {
+						color: '#dddddd',
+						weight: 2,
+						fillOpacity: 1,
+						fillColor: '#1f78b4'
+					};
+				}
+    }).addTo(map);
+  }
 
     function drawBarCharts(data) {
         var killed_hash = {2013: 0, 2014: 0, 2015: 0, 2016: 0},
@@ -138,13 +183,18 @@
     }
 
     function numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function drawMap(data) {
+    function drawMap(data, hexbinData) {
         drawBarCharts(data);
         drawPointsAndToolTips(data);
+        drawHexbin(hexbinData);
         drawFilter();
+    }
+
+    function chooseLayer() {
+
     }
 
     function drawFilter() {
